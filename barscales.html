@@ -14,10 +14,8 @@
 		<script type="text/javascript">
 			var w = 600;
 			var h = 250;
-
 			var dataset = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
 							11, 12, 15, 20, 18, 17, 16, 18, 23, 25 ];
-
 			var xScale = d3.scaleBand()
 							.domain(d3.range(dataset.length)) 
 							.range([0, w])
@@ -78,7 +76,7 @@
 						.data(dataset)
 						.transition()
 						.delay(function(d, i) {
-							return i * 100;
+							return i / dataset.length * 100;
 						})
 						.duration(500)
 						.ease(d3.easeLinear)
@@ -95,7 +93,7 @@
 						.data(dataset)
 						.transition()
 						.delay(function(d, i) {
-							return i * 100;
+							return i / dataset.length * 100;
 						})
 						.duration(500)
 						.ease(d3.easeLinear)
