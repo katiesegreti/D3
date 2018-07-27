@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>English: Readings progress</title>
+		<script type="text/javascript" src="d3.js"></script>
+		<style type="text/css">
+			/* No style rules here yet */
+		</style>
+	</head>
+	<body>
+	
+		<h2>Reading progress: English</h2>
+		
+			
+		<script type="text/javascript">
+			//Width and height
+			var w = 600;
+			var h = 400;
+			var padding = 30;
+			
+			var dataset = [ 
+			{
+					book: "Katerine",
+					totalPages: 256,
+					pagesRead: 98,
+					timePerPage: 3
+				},
+				{
+					book: "A Buried Giant",
+					totalPages: 317,
+					pagesRead: 0,
+					timePerPage: 4
+				},
+				{
+					book: "Lions of Al-Rassam",
+					totalPages: 522,
+					pagesRead: 0,
+					timePerPage:3
+				},
+				{
+					book: "A Game of Thrones",
+					totalPages: 399,
+					pagesRead: 399,
+					timePerPage: 3
+				}
+			 ];
+
+			//create scale funtions
+			var xScale = d3.scaleBand()
+							.domain(dataset.map(function(d) { return d.book; }))
+							//.domain(d3.range(dataset.length))
+							.rangeRound([padding, w - padding * 2])
+							.paddingInner(0.05);
+			
+			var yScale = d3.scaleLinear()
+							.domain([0, d3.max(dataset, function(d) { 
+								return d.totalPages;
+							 })])
+							.range([h - padding, padding]);
+			//define x axis
+			var xAxis = d3.axisBottom()
+							.scale(xScale)
+							.ticks(5);
+			//define y axis
+			var yAxis = d3.axisLeft()
+							.scale(yScale)
+							.ticks(5);
+			//Define key function, to be used when binding data
+			var key = function(d) {
+				return d.book;
+			};
+			
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+			svg.append("clipPath")
+				.attr("id", "chart-area")
+				.append("rect")
+				.attr("x", padding)
+				.attr("y", padding)
+				.attr("width", w - padding )
+				.attr("height", h - padding );
+			//Create bars
+			svg.append("g")
+				.attr("id", "bars")
+				.attr("clip-path", "url(#chart-area)")
+				.selectAll("rect")
+			   .data(dataset, key)
+			   .enter()
+			   .append("rect")
+			   .attr("x", function(d) {
+			   		return xScale(d.book);
+			   })
+			   .attr("y", function(d) {
+			   		return yScale(d.totalPages);
+			   })
+			   .attr("width", xScale.bandwidth())
+			   .attr("height", function(d) {
+			   		return h - yScale(d.totalPages) - padding;
+			   })
+			   .attr("fill", "#7166BB");
+			//Create X axis
+			svg.append("g")
+				.attr("class", "x axis")
+				.attr("transform", "translate(0," + (h - padding) + ")")
+				.call(xAxis);
+			
+			//Create Y axis
+			svg.append("g")
+				.attr("class", "y axis")
+				.attr("transform", "translate(" + padding + ",0)")
+				.call(yAxis);
+			//Create labels
+			svg.append("g")
+				.attr("id", "labels")
+				.attr("clip-path", "url(#chart-area)")
+				.selectAll("text")
+			   	.data(dataset, key)
+			   	.enter()
+			   	.append("text")
+			   	.text(function(d) {
+			   		return d.totalPages;
+			   	})
+			   	.attr("text-anchor", "middle")
+			   	.attr("x", function(d) {
+			   		return xScale(d.book) + xScale.bandwidth() / 2;
+			   	})
+			   	.attr("y", function(d) {
+			   		return yScale(d.totalPages) + 14;
+			   	})
+			   	.attr("font-family", "sans-serif")
+			   	.attr("font-size", "11px")
+			   	.attr("fill", "white");
+			//On click, update with new data			
+			
+		</script>
+	</body>
+</html>
